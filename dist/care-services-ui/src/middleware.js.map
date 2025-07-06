@@ -1,0 +1,1 @@
+{"version":3,"file":"middleware.js","sourceRoot":"","sources":["../../../care-services-ui/src/middleware.ts"],"names":[],"mappings":";;;AAAA,qDAAoD;AACpD,sDAA8D;AAE9D,kBAAe,IAAA,oBAAgB,EAAC;IAC9B,OAAO,EAAP,qBAAO;IACP,aAAa,EAAb,2BAAa;IACb,YAAY,EAAE,WAAW;CAC1B,CAAC,CAAC;AAEU,QAAA,MAAM,GAAG;IACpB,OAAO,EAAE;QAIP,oCAAoC;QAEpC,wBAAwB;KACzB;CACF,CAAC"}

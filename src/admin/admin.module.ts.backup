@@ -1,0 +1,64 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+// Import required modules
+import { AuthModule } from '../auth/auth.module';
+import { WebSocketModule } from '../websocket/websocket.module';
+
+// Controllers
+import { AdminController } from './admin.controller';
+
+// Services
+import { AdminDashboardService } from './services/admin-dashboard.service';
+import { AdminUserManagementService } from './services/admin-user-management.service';
+
+// Entities
+import { User } from '../database/entities/user.entity';
+import { UserRole } from '../database/entities/user-role.entity';
+import { UserProfile } from '../database/entities/user-profile.entity';
+import { ServiceProvider } from '../database/entities/service-provider.entity';
+import { ServiceCategory } from '../database/entities/service-category.entity';
+import { Service } from '../database/entities/service.entity';
+import { Booking } from '../database/entities/booking.entity';
+import { Review } from '../database/entities/review.entity';
+import { AdminUser } from '../database/entities/admin-user.entity';
+import { ProviderVerification } from '../database/entities/provider-verification.entity';
+import { Dispute } from '../database/entities/dispute.entity';
+import { PlatformSetting } from '../database/entities/platform-setting.entity';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([
+      // Core entities
+      User,
+      UserRole,
+      UserProfile,
+      ServiceProvider,
+      ServiceCategory,
+      Service,
+      Booking,
+      Review,
+      // Phase 4 entities
+      AdminUser,
+      ProviderVerification,
+      Dispute,
+      PlatformSetting,
+    ]),
+    // Import required modules for dependencies
+    AuthModule,
+    WebSocketModule,
+  ],
+  controllers: [AdminController],
+  providers: [
+    AdminDashboardService,
+    AdminUserManagementService,
+    // Additional services will be added here:
+    // AdminDisputeService,
+    // AdminFinancialService,
+    // AdminContentModerationService,
+    // AdminPlatformSettingsService,
+    // AdminAuditService,
+  ],
+  exports: [AdminDashboardService, AdminUserManagementService],
+})
+export class AdminModule {}

@@ -1,0 +1,34 @@
+import { UserProfile } from './user-profile.entity';
+import { UserRole } from './user-role.entity';
+import { RefreshToken } from './refresh-token.entity';
+import { AuditLog } from './audit-log.entity';
+import { MfaSecret } from './mfa-secret.entity';
+export declare class User {
+    id: string;
+    email: string;
+    phone: string;
+    passwordHash: string;
+    isActive: boolean;
+    isVerified: boolean;
+    verificationToken: string;
+    verificationTokenExpires: Date;
+    passwordResetToken: string;
+    passwordResetExpiry: Date;
+    lastLoginAt: Date;
+    failedLoginAttempts: number;
+    lockedUntil: Date;
+    mfaEnabled: boolean;
+    lastLoginIp: string;
+    createdAt: Date;
+    updatedAt: Date;
+    profile: UserProfile;
+    roles: UserRole[];
+    refreshTokens: RefreshToken[];
+    auditLogs: AuditLog[];
+    mfaSecret: MfaSecret;
+    customerReviews: any[];
+    get isLocked(): boolean;
+    get canLogin(): boolean;
+    get hasRole(): (role: string) => boolean;
+    emailToLowerCase(): void;
+}

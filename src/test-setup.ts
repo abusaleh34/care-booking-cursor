@@ -1,0 +1,276 @@
+import 'reflect-metadata';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { v4 as uuidv4 } from 'uuid';
+
+// Global test configuration
+global.console = {
+  ...console,
+  // Silence logs in tests unless specifically needed
+  log: jest.fn(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+};
+
+// Mock environment variables for testing
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test-jwt-secret';
+process.env.DATABASE_URL = 'postgres://test:test@localhost:5432/test_db';
+process.env.REDIS_URL = 'redis://localhost:6379/1';
+
+// Setup global test timeouts
+jest.setTimeout(30000);
+
+// Mock common external services
+jest.mock('stripe', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    paymentIntents: {
+      create: jest.fn(),
+      confirm: jest.fn(),
+      cancel: jest.fn(),
+    },
+    refunds: {
+      create: jest.fn(),
+    },
+    webhooks: {
+      constructEvent: jest.fn(),
+    },
+  })),
+}));
+
+jest.mock('nodemailer', () => ({
+  createTransporter: jest.fn(() => ({
+    sendMail: jest.fn().mockResolvedValue({ messageId: 'test-message-id' }),
+  })),
+}));
+
+jest.mock('twilio', () => ({
+  __esModule: true,
+  default: jest.fn(() => ({
+    messages: {
+      create: jest.fn().mockResolvedValue({ sid: 'test-message-sid' }),
+    },
+  })),
+}));
+
+// Global beforeEach for all tests
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+// Clean up after tests
+afterEach(() => {
+  jest.resetAllMocks();
+});
+
+// Mock repository factory
+export function createMockRepository<T = any>(): MockRepository<T> {
+  return {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    findOneBy: jest.fn(),
+    findBy: jest.fn(),
+    save: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    createQueryBuilder: jest.fn(() => ({
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      orWhere: jest.fn().mockReturnThis(),
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      innerJoinAndSelect: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getMany: jest.fn(),
+      getOne: jest.fn(),
+      getCount: jest.fn(),
+      getRawMany: jest.fn(),
+      getRawOne: jest.fn(),
+    })),
+    count: jest.fn(),
+    findAndCount: jest.fn(),
+    increment: jest.fn(),
+    decrement: jest.fn(),
+    softDelete: jest.fn(),
+    restore: jest.fn(),
+  };
+}
+
+export type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
+// Test data factories
+export function createTestUser(overrides: Partial<any> = {}) {
+  return {
+    id: uuidv4(),
+    email: `test-${Date.now()}@example.com`,
+    passwordHash: 'hashed_password',
+    isActive: true,
+    isVerified: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+export function createTestProvider(overrides: Partial<any> = {}) {
+  return {
+    id: uuidv4(),
+    userId: uuidv4(),
+    businessName: 'Test Business',
+    description: 'Test description',
+    isVerified: false,
+    rating: 0,
+    totalReviews: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+export function createTestBooking(overrides: Partial<any> = {}) {
+  return {
+    id: uuidv4(),
+    customerId: uuidv4(),
+    providerId: uuidv4(),
+    serviceId: uuidv4(),
+    status: 'pending',
+    scheduledDate: new Date(),
+    scheduledTime: '10:00',
+    duration: 60,
+    totalPrice: 100,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+export function createTestService(overrides: Partial<any> = {}) {
+  return {
+    id: uuidv4(),
+    providerId: uuidv4(),
+    categoryId: uuidv4(),
+    name: 'Test Service',
+    description: 'Test service description',
+    price: 50,
+    duration: 60,
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+// Mock services
+export const mockConfigService = {
+  get: jest.fn((key: string, defaultValue?: any) => {
+    const config: Record<string, any> = {
+      JWT_SECRET: 'test-secret',
+      JWT_EXPIRES_IN: '1h',
+      DATABASE_HOST: 'localhost',
+      DATABASE_PORT: 5432,
+      REDIS_HOST: 'localhost',
+      REDIS_PORT: 6379,
+    };
+    return config[key] || defaultValue;
+  }),
+};
+
+export const mockJwtService = {
+  sign: jest.fn((payload) => 'mock-jwt-token'),
+  verify: jest.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
+  decode: jest.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
+};
+
+export const mockCacheManager = {
+  get: jest.fn(),
+  set: jest.fn(),
+  del: jest.fn(),
+  reset: jest.fn(),
+};
+
+// Test module builder
+export class TestModuleBuilder {
+  private providers: any[] = [];
+  private imports: any[] = [];
+
+  addProvider(provider: any): this {
+    this.providers.push(provider);
+    return this;
+  }
+
+  addMockRepository(entity: any, mockRepo?: any): this {
+    this.providers.push({
+      provide: getRepositoryToken(entity),
+      useValue: mockRepo || createMockRepository(),
+    });
+    return this;
+  }
+
+  addMockService(serviceClass: any, mockImplementation: any): this {
+    this.providers.push({
+      provide: serviceClass,
+      useValue: mockImplementation,
+    });
+    return this;
+  }
+
+  addImport(module: any): this {
+    this.imports.push(module);
+    return this;
+  }
+
+  async build(moduleClass: any): Promise<TestingModule> {
+    return Test.createTestingModule({
+      imports: this.imports,
+      providers: [...this.providers],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(mockConfigService)
+      .overrideProvider(JwtService)
+      .useValue(mockJwtService)
+      .compile();
+  }
+}
+
+// Database connection helper for integration tests
+export async function createTestDatabaseConnection() {
+  // This would be used for integration tests with a real test database
+  // For now, we'll use mocks in unit tests
+}
+
+// Request helper for E2E tests
+export function createAuthenticatedRequest(app: any, token?: string) {
+  const authToken = token || 'Bearer mock-jwt-token';
+  return {
+    get: (url: string) => app.get(url).set('Authorization', authToken),
+    post: (url: string) => app.post(url).set('Authorization', authToken),
+    put: (url: string) => app.put(url).set('Authorization', authToken),
+    patch: (url: string) => app.patch(url).set('Authorization', authToken),
+    delete: (url: string) => app.delete(url).set('Authorization', authToken),
+  };
+}
+
+// Global test setup
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+// Suppress console logs during tests
+if (process.env.NODE_ENV === 'test') {
+  global.console = {
+    ...console,
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+}

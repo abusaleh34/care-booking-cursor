@@ -1,0 +1,32 @@
+import { Repository } from 'typeorm';
+import { ServiceProvider } from '../../database/entities/service-provider.entity';
+import { Service } from '../../database/entities/service.entity';
+import { ProviderAvailability } from '../../database/entities/provider-availability.entity';
+import { ProviderBlockedTimes } from '../../database/entities/provider-blocked-times.entity';
+import { CacheService } from '../../cache/cache.service';
+import { RealtimeGateway } from '../../websocket/websocket.gateway';
+import { BlockTimeDto, CreateServiceDto, SetAvailabilityDto, UpdateBusinessProfileDto, UpdateServiceDto } from '../dto/provider.dto';
+export declare class ProviderBusinessService {
+    private readonly providerRepository;
+    private readonly serviceRepository;
+    private readonly availabilityRepository;
+    private readonly blockedTimesRepository;
+    private readonly cacheService;
+    private readonly realtimeGateway;
+    constructor(providerRepository: Repository<ServiceProvider>, serviceRepository: Repository<Service>, availabilityRepository: Repository<ProviderAvailability>, blockedTimesRepository: Repository<ProviderBlockedTimes>, cacheService: CacheService, realtimeGateway: RealtimeGateway);
+    getProviderByUserId(userId: string): Promise<ServiceProvider | null>;
+    getBusinessProfile(providerId: string): Promise<ServiceProvider>;
+    updateBusinessProfile(providerId: string, updateData: UpdateBusinessProfileDto): Promise<ServiceProvider>;
+    getServices(providerId: string): Promise<Service[]>;
+    createService(providerId: string, createServiceDto: CreateServiceDto): Promise<Service>;
+    updateService(providerId: string, serviceId: string, updateServiceDto: UpdateServiceDto): Promise<Service>;
+    deleteService(providerId: string, serviceId: string): Promise<void>;
+    getAvailability(providerId: string): Promise<ProviderAvailability[]>;
+    setAvailability(providerId: string, setAvailabilityDto: SetAvailabilityDto): Promise<ProviderAvailability[]>;
+    getBlockedTimes(providerId: string, startDate?: string, endDate?: string): Promise<ProviderBlockedTimes[]>;
+    blockTime(providerId: string, blockTimeDto: BlockTimeDto): Promise<ProviderBlockedTimes>;
+    unblockTime(providerId: string, blockedTimeId: string): Promise<void>;
+    uploadPortfolioImage(providerId: string, imageUrl: string): Promise<ServiceProvider>;
+    deletePortfolioImage(providerId: string, imageUrl: string): Promise<void>;
+    getServicePerformance(providerId: string): Promise<any[]>;
+}

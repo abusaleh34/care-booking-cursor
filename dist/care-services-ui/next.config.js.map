@@ -1,0 +1,1 @@
+{"version":3,"file":"next.config.js","sourceRoot":"","sources":["../../care-services-ui/next.config.ts"],"names":[],"mappings":";;AACA,6CAAoD;AAEpD,MAAM,YAAY,GAAG,IAAA,gBAAoB,GAAE,CAAC;AAE5C,MAAM,UAAU,GAAe;IAC7B,MAAM,EAAE;QACN,OAAO,EAAE,CAAC,WAAW,EAAE,qBAAqB,CAAC;KAC9C;IACD,YAAY,EAAE;QACZ,aAAa,EAAE;YACb,aAAa,EAAE,KAAK;SACrB;KACF;CACF,CAAC;AAEF,kBAAe,YAAY,CAAC,UAAU,CAAC,CAAC"}
