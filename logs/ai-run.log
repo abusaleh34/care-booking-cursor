@@ -1,0 +1,264 @@
+
+> care-services-backend@1.0.0 test
+> vitest run --coverage --run || true
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v1.5.0 /Users/ibrahimalmotairi/projects/care-services-cursor
+      Coverage enabled with v8
+
+ ❯ tests/unit/customer/search-filters.spec.ts  (0 test)
+ ❯ tests/unit/customer/search.service.spec.ts  (0 test)
+ ❯ tests/unit/customer/booking-lifecycle.spec.ts  (0 test)
+ ❯ tests/unit/auth/audit.service.spec.ts  (0 test)
+ ❯ tests/unit/auth/auth.controller.spec.ts  (0 test)
+ ❯ tests/unit/customer/payment-processing.spec.ts  (0 test)
+ ❯ tests/unit/auth/auth-jwt-mfa.spec.ts  (0 test)
+ ❯ tests/unit/auth/token.service.spec.ts  (0 test)
+ ❯ tests/unit/auth/sms.service.spec.ts  (0 test)
+ ❯ tests/unit/auth/email.service.spec.ts  (22 tests | 22 failed) 20ms
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > constructor > should create nodemailer transporter with correct config
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendVerificationEmail > should send verification email with correct parameters
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendVerificationEmail > should handle email sending errors
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendPasswordResetEmail > should send password reset email with correct parameters
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send welcome email for customers
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send welcome email for providers
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send generic welcome for unknown role
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendBookingConfirmation > should send booking confirmation to customer
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendBookingConfirmation > should send booking notification to provider
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendBookingCancellation > should send cancellation email to customer
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendBookingCancellation > should send cancellation email to provider
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendBookingReminder > should send reminder email with correct details
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendPaymentReceipt > should send payment receipt email
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendAccountLockNotification > should send account lock notification
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendAccountUnlockNotification > should send account unlock notification
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendReviewRequest > should send review request email
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendProviderApprovalNotification > should send approval notification
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendProviderApprovalNotification > should send rejection notification
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendCustomEmail > should send custom email with provided content
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > sendCustomEmail > should generate text from HTML if not provided
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > error handling > should propagate transporter errors
+     → Cannot read properties of undefined (reading 'get')
+   ❯ tests/unit/auth/email.service.spec.ts > EmailService > error handling > should handle missing email configuration gracefully
+     → Cannot read properties of undefined (reading 'get')
+ ❯ tests/unit/provider/provider-booking.service.spec.ts  (0 test)
+ ❯ tests/e2e/customer-journey.spec.ts  (0 test)
+ ❯ src/customer/services/booking.service.spec.ts  (0 test)
+ ❯ tests/unit/auth/auth-registration.spec.ts  (0 test)
+ ❯ src/admin/services/admin-user-management.service.spec.ts  (0 test)
+ ❯ src/auth/services/auth.service.spec.ts  (0 test)
+ ❯ src/auth/services/password.service.spec.ts  (0 test)
+ ❯ src/common/services/cache-optimization.service.spec.ts  (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 17 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/customer-journey.spec.ts [ tests/e2e/customer-journey.spec.ts ]
+Error: Playwright Test did not expect test.describe() to be called here.
+Most common reasons include:
+- You are calling test.describe() in a configuration file.
+- You are calling test.describe() in a file that is imported by the configuration file.
+- You have two different versions of @playwright/test. This usually happens
+  when one of the dependencies in your package.json depends on @playwright/test.
+ ❯ TestTypeImpl._currentSuite node_modules/@playwright/test/node_modules/playwright/lib/common/testType.js:74:13
+ ❯ TestTypeImpl._describe node_modules/@playwright/test/node_modules/playwright/lib/common/testType.js:114:24
+ ❯ Function.describe node_modules/@playwright/test/node_modules/playwright/lib/transform/transform.js:273:12
+ ❯ tests/e2e/customer-journey.spec.ts:3:6
+      1| import { test, expect } from '@playwright/test';
+      2| 
+      3| test.describe('Customer Journey E2E Tests', () => {
+       |      ^
+      4|   const baseURL = process.env.FRONTEND_URL || 'http://localhost:3000';
+      5|   const apiURL = process.env.API_URL || 'http://localhost:3000/api/v1';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/39]⎯
+
+ FAIL  tests/unit/auth/audit.service.spec.ts [ tests/unit/auth/audit.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/database/entities/audit-log.entity.ts:2:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/39]⎯
+
+ FAIL  tests/unit/auth/auth-jwt-mfa.spec.ts [ tests/unit/auth/auth-jwt-mfa.spec.ts ]
+ FAIL  tests/unit/auth/sms.service.spec.ts [ tests/unit/auth/sms.service.spec.ts ]
+ FAIL  tests/unit/auth/token.service.spec.ts [ tests/unit/auth/token.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/database/entities/mfa-secret.entity.ts:2:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/39]⎯
+
+ FAIL  tests/unit/auth/auth-registration.spec.ts [ tests/unit/auth/auth-registration.spec.ts ]
+ FAIL  tests/unit/auth/auth.controller.spec.ts [ tests/unit/auth/auth.controller.spec.ts ]
+ FAIL  src/auth/services/auth.service.spec.ts [ src/auth/services/auth.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/auth/services/auth.service.ts:4:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/39]⎯
+
+ FAIL  tests/unit/customer/booking-lifecycle.spec.ts [ tests/unit/customer/booking-lifecycle.spec.ts ]
+ FAIL  tests/unit/customer/payment-processing.spec.ts [ tests/unit/customer/payment-processing.spec.ts ]
+ FAIL  tests/unit/provider/provider-booking.service.spec.ts [ tests/unit/provider/provider-booking.service.spec.ts ]
+ FAIL  src/customer/services/booking.service.spec.ts [ src/customer/services/booking.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/database/entities/booking.entity.ts:2:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/39]⎯
+
+ FAIL  tests/unit/customer/search-filters.spec.ts [ tests/unit/customer/search-filters.spec.ts ]
+ FAIL  tests/unit/customer/search.service.spec.ts [ tests/unit/customer/search.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/database/entities/service-provider.entity.ts:2:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/39]⎯
+
+ FAIL  src/admin/services/admin-user-management.service.spec.ts [ src/admin/services/admin-user-management.service.spec.ts ]
+ColumnTypeUndefinedError: Column type for User#email is not defined and cannot be guessed. Make sure you have turned on an "emitDecoratorMetadata": true option in tsconfig.json. Also make sure you have imported "reflect-metadata" on top of the main entry file in your application (before any entity imported).If you are using JavaScript instead of TypeScript you must explicitly provide a column type.
+ ❯ src/decorator/columns/Column.ts:192:23
+ ❯ __decorateClass src/database/entities/user.entity.ts:13:24
+     11|   UpdateDateColumn,
+     12| } from 'typeorm';
+     13| import { UserProfile } from './user-profile.entity';
+       |                        ^
+     14| import { UserRole } from './user-role.entity';
+     15| import { RefreshToken } from './refresh-token.entity';
+ ❯ src/database/entities/user.entity.ts:27:3
+ ❯ src/admin/services/admin-user-management.service.ts:4:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/39]⎯
+
+ FAIL  src/auth/services/password.service.spec.ts [ src/auth/services/password.service.spec.ts ]
+ReferenceError: jest is not defined
+ ❯ src/auth/services/password.service.spec.ts:6:1
+      4| 
+      5| // Mock bcrypt
+      6| jest.mock('bcrypt');
+       | ^
+      7| 
+      8| import * as bcrypt from 'bcrypt';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/39]⎯
+
+ FAIL  src/common/services/cache-optimization.service.spec.ts [ src/common/services/cache-optimization.service.spec.ts ]
+ReferenceError: jest is not defined
+ ❯ src/common/services/cache-optimization.service.spec.ts:7:1
+      5| 
+      6| // Mock ioredis
+      7| jest.mock('ioredis', () => ({
+       | ^
+      8|   default: jest.fn().mockImplementation(() => ({
+      9|     info: jest.fn().mockResolvedValue(''),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/39]⎯
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 22 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > constructor > should create nodemailer transporter with correct config
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendVerificationEmail > should send verification email with correct parameters
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendVerificationEmail > should handle email sending errors
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendPasswordResetEmail > should send password reset email with correct parameters
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send welcome email for customers
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send welcome email for providers
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendWelcomeEmail > should send generic welcome for unknown role
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendBookingConfirmation > should send booking confirmation to customer
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendBookingConfirmation > should send booking notification to provider
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendBookingCancellation > should send cancellation email to customer
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendBookingCancellation > should send cancellation email to provider
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendBookingReminder > should send reminder email with correct details
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendPaymentReceipt > should send payment receipt email
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendAccountLockNotification > should send account lock notification
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendAccountUnlockNotification > should send account unlock notification
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendReviewRequest > should send review request email
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendProviderApprovalNotification > should send approval notification
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendProviderApprovalNotification > should send rejection notification
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendCustomEmail > should send custom email with provided content
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > sendCustomEmail > should generate text from HTML if not provided
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > error handling > should propagate transporter errors
+ FAIL  tests/unit/auth/email.service.spec.ts > EmailService > error handling > should handle missing email configuration gracefully
+TypeError: Cannot read properties of undefined (reading 'get')
+ ❯ new EmailService src/auth/services/email.service.ts:12:41
+     10| 
+     11|   constructor(private readonly configService: ConfigService) {
+     12|     const smtpHost = this.configService.get('SMTP_HOST');
+       |                                         ^
+     13|     const smtpUser = this.configService.get('SMTP_USER');
+     14|     const smtpPass = this.configService.get('SMTP_PASS');
+ ❯ TestingInjector.instantiateClass node_modules/@nestjs/core/injector/injector.js:373:19
+ ❯ callback node_modules/@nestjs/core/injector/injector.js:65:45
+ ❯ TestingInjector.resolveConstructorParams node_modules/@nestjs/core/injector/injector.js:145:24
+ ❯ TestingInjector.loadInstance node_modules/@nestjs/core/injector/injector.js:70:13
+ ❯ TestingInjector.loadProvider node_modules/@nestjs/core/injector/injector.js:98:9
+ ❯ node_modules/@nestjs/core/injector/instance-loader.js:56:13
+ ❯ TestingInstanceLoader.createInstancesOfProviders node_modules/@nestjs/core/injector/instance-loader.js:55:9
+ ❯ node_modules/@nestjs/core/injector/instance-loader.js:40:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/39]⎯
+
+ Test Files  18 failed (18)
+      Tests  22 failed (22)
+   Start at  23:22:40
+   Duration  894ms (transform 170ms, setup 204ms, collect 10ms, tests 20ms, environment 0ms, prepare 32ms)
+

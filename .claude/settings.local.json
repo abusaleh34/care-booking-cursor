@@ -43,7 +43,11 @@
       "Bash(npx next dev:*)",
       "Bash(ping:*)",
       "Bash(true)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(git config:*)",
+      "Bash(npm pkg:*)",
+      "Bash(npx playwright install:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

@@ -5,16 +5,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
+import { vi, beforeEach, afterEach } from 'vitest';
 
 // Global test configuration
 global.console = {
   ...console,
   // Silence logs in tests unless specifically needed
-  log: jest.fn(),
-  debug: jest.fn(),
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  log: vi.fn(),
+  debug: vi.fn(),
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
 };
 
 // Mock environment variables for testing
@@ -23,88 +24,85 @@ process.env.JWT_SECRET = 'test-jwt-secret';
 process.env.DATABASE_URL = 'postgres://test:test@localhost:5432/test_db';
 process.env.REDIS_URL = 'redis://localhost:6379/1';
 
-// Setup global test timeouts
-jest.setTimeout(30000);
-
 // Mock common external services
-jest.mock('stripe', () => ({
+vi.mock('stripe', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
+  default: vi.fn(() => ({
     paymentIntents: {
-      create: jest.fn(),
-      confirm: jest.fn(),
-      cancel: jest.fn(),
+      create: vi.fn(),
+      confirm: vi.fn(),
+      cancel: vi.fn(),
     },
     refunds: {
-      create: jest.fn(),
+      create: vi.fn(),
     },
     webhooks: {
-      constructEvent: jest.fn(),
+      constructEvent: vi.fn(),
     },
   })),
 }));
 
-jest.mock('nodemailer', () => ({
-  createTransporter: jest.fn(() => ({
-    sendMail: jest.fn().mockResolvedValue({ messageId: 'test-message-id' }),
+vi.mock('nodemailer', () => ({
+  createTransporter: vi.fn(() => ({
+    sendMail: vi.fn().mockResolvedValue({ messageId: 'test-message-id' }),
   })),
 }));
 
-jest.mock('twilio', () => ({
+vi.mock('twilio', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
+  default: vi.fn(() => ({
     messages: {
-      create: jest.fn().mockResolvedValue({ sid: 'test-message-sid' }),
+      create: vi.fn().mockResolvedValue({ sid: 'test-message-sid' }),
     },
   })),
 }));
 
 // Global beforeEach for all tests
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 // Clean up after tests
 afterEach(() => {
-  jest.resetAllMocks();
+  vi.resetAllMocks();
 });
 
 // Mock repository factory
 export function createMockRepository<T = any>(): MockRepository<T> {
   return {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    findOneBy: jest.fn(),
-    findBy: jest.fn(),
-    save: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
-    createQueryBuilder: jest.fn(() => ({
-      where: jest.fn().mockReturnThis(),
-      andWhere: jest.fn().mockReturnThis(),
-      orWhere: jest.fn().mockReturnThis(),
-      leftJoinAndSelect: jest.fn().mockReturnThis(),
-      innerJoinAndSelect: jest.fn().mockReturnThis(),
-      orderBy: jest.fn().mockReturnThis(),
-      skip: jest.fn().mockReturnThis(),
-      take: jest.fn().mockReturnThis(),
-      getMany: jest.fn(),
-      getOne: jest.fn(),
-      getCount: jest.fn(),
-      getRawMany: jest.fn(),
-      getRawOne: jest.fn(),
+    find: vi.fn(),
+    findOne: vi.fn(),
+    findOneBy: vi.fn(),
+    findBy: vi.fn(),
+    save: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    createQueryBuilder: vi.fn(() => ({
+      where: vi.fn().mockReturnThis(),
+      andWhere: vi.fn().mockReturnThis(),
+      orWhere: vi.fn().mockReturnThis(),
+      leftJoinAndSelect: vi.fn().mockReturnThis(),
+      innerJoinAndSelect: vi.fn().mockReturnThis(),
+      orderBy: vi.fn().mockReturnThis(),
+      skip: vi.fn().mockReturnThis(),
+      take: vi.fn().mockReturnThis(),
+      getMany: vi.fn(),
+      getOne: vi.fn(),
+      getCount: vi.fn(),
+      getRawMany: vi.fn(),
+      getRawOne: vi.fn(),
     })),
-    count: jest.fn(),
-    findAndCount: jest.fn(),
-    increment: jest.fn(),
-    decrement: jest.fn(),
-    softDelete: jest.fn(),
-    restore: jest.fn(),
+    count: vi.fn(),
+    findAndCount: vi.fn(),
+    increment: vi.fn(),
+    decrement: vi.fn(),
+    softDelete: vi.fn(),
+    restore: vi.fn(),
   };
 }
 
-export type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+export type MockRepository<T = any> = Partial<Record<keyof Repository<T>, any>>;
 
 // Test data factories
 export function createTestUser(overrides: Partial<any> = {}) {
@@ -170,7 +168,7 @@ export function createTestService(overrides: Partial<any> = {}) {
 
 // Mock services
 export const mockConfigService = {
-  get: jest.fn((key: string, defaultValue?: any) => {
+  get: vi.fn((key: string, defaultValue?: any) => {
     const config: Record<string, any> = {
       JWT_SECRET: 'test-secret',
       JWT_EXPIRES_IN: '1h',
@@ -184,16 +182,16 @@ export const mockConfigService = {
 };
 
 export const mockJwtService = {
-  sign: jest.fn((payload) => 'mock-jwt-token'),
-  verify: jest.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
-  decode: jest.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
+  sign: vi.fn((payload) => 'mock-jwt-token'),
+  verify: vi.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
+  decode: vi.fn((token) => ({ sub: 'user-id', email: 'test@example.com' })),
 };
 
 export const mockCacheManager = {
-  get: jest.fn(),
-  set: jest.fn(),
-  del: jest.fn(),
-  reset: jest.fn(),
+  get: vi.fn(),
+  set: vi.fn(),
+  del: vi.fn(),
+  reset: vi.fn(),
 };
 
 // Test module builder
@@ -260,17 +258,17 @@ export function createAuthenticatedRequest(app: any, token?: string) {
 
 // Global test setup
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 // Suppress console logs during tests
 if (process.env.NODE_ENV === 'test') {
   global.console = {
     ...console,
-    log: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    info: jest.fn(),
-    debug: jest.fn(),
+    log: vi.fn(),
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
   };
 }
