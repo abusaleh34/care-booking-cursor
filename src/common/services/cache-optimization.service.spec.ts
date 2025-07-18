@@ -2,13 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CacheOptimizationService } from './cache-optimization.service';
 import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { vi } from 'vitest';
 
 // Mock ioredis
-jest.mock('ioredis', () => ({
-  default: jest.fn().mockImplementation(() => ({
-    info: jest.fn().mockResolvedValue(''),
-    dbsize: jest.fn().mockResolvedValue(0),
-    keys: jest.fn().mockResolvedValue([]),
+vi.mock('ioredis', () => ({
+  default: vi.fn().mockImplementation(() => ({
+    info: vi.fn().mockResolvedValue(''),
+    dbsize: vi.fn().mockResolvedValue(0),
+    keys: vi.fn().mockResolvedValue([]),
   })),
 }));
 
@@ -19,13 +20,13 @@ describe('CacheOptimizationService', () => {
 
   beforeEach(async () => {
     mockCacheManager = {
-      get: jest.fn(),
-      set: jest.fn(),
-      del: jest.fn(),
+      get: vi.fn(),
+      set: vi.fn(),
+      del: vi.fn(),
     };
 
     mockConfigService = {
-      get: jest.fn().mockImplementation((key) => {
+      get: vi.fn().mockImplementation((key) => {
         if (key === 'optimization') {
           return {
             cache: {
@@ -75,7 +76,7 @@ describe('CacheOptimizationService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -98,7 +99,7 @@ describe('CacheOptimizationService', () => {
     it('should execute fallback when cache miss', async () => {
       const key = 'test-key';
       const fallbackData = { data: 'fallback-data' };
-      const fallback = jest.fn().mockResolvedValue(fallbackData);
+      const fallback = vi.fn().mockResolvedValue(fallbackData);
 
       mockCacheManager.get.mockResolvedValue(null);
       mockCacheManager.set.mockResolvedValue(undefined);

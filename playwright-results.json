@@ -1,0 +1,99 @@
+{
+  "config": {
+    "configFile": "/Users/ibrahimalmotairi/projects/care-services-cursor/playwright.config.ts",
+    "rootDir": "/Users/ibrahimalmotairi/projects/care-services-cursor/tests/e2e",
+    "forbidOnly": true,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 15000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/ibrahimalmotairi/projects/care-services-cursor/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/ibrahimalmotairi/projects/care-services-cursor/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/ibrahimalmotairi/projects/care-services-cursor/test-results",
+        "repeatEach": 1,
+        "retries": 2,
+        "metadata": {},
+        "id": "api-tests",
+        "name": "api-tests",
+        "testDir": "/Users/ibrahimalmotairi/projects/care-services-cursor/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*\\.spec\\.ts$/"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "version": "1.44.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [],
+  "errors": [
+    {
+      "message": "Error: Playwright Test did not expect test.describe() to be called here.\nMost common reasons include:\n- You are calling test.describe() in a configuration file.\n- You are calling test.describe() in a file that is imported by the configuration file.\n- You have two different versions of @playwright/test. This usually happens\n  when one of the dependencies in your package.json depends on @playwright/test.",
+      "stack": "Error: Playwright Test did not expect test.describe() to be called here.\nMost common reasons include:\n- You are calling test.describe() in a configuration file.\n- You are calling test.describe() in a file that is imported by the configuration file.\n- You have two different versions of @playwright/test. This usually happens\n  when one of the dependencies in your package.json depends on @playwright/test.\n    at TestTypeImpl._currentSuite (/Users/ibrahimalmotairi/projects/care-services-cursor/node_modules/@playwright/test/node_modules/playwright/lib/common/testType.js:74:13)\n    at TestTypeImpl._describe (/Users/ibrahimalmotairi/projects/care-services-cursor/node_modules/@playwright/test/node_modules/playwright/lib/common/testType.js:114:24)\n    at Function.describe (/Users/ibrahimalmotairi/projects/care-services-cursor/node_modules/@playwright/test/node_modules/playwright/lib/transform/transform.js:273:12)\n    at Object.<anonymous> (/Users/ibrahimalmotairi/projects/care-services-cursor/tests/e2e/customer-journey.spec.ts:3:6)",
+      "location": {
+        "file": "/Users/ibrahimalmotairi/projects/care-services-cursor/tests/e2e/customer-journey.spec.ts",
+        "column": 6,
+        "line": 3
+      },
+      "snippet": "   at customer-journey.spec.ts:3\n\n\u001b[0m \u001b[90m 1 |\u001b[39m \u001b[36mimport\u001b[39m { test\u001b[33m,\u001b[39m expect } \u001b[36mfrom\u001b[39m \u001b[32m'@playwright/test'\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 2 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 3 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'Customer Journey E2E Tests'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m   |\u001b[39m      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 4 |\u001b[39m   \u001b[36mconst\u001b[39m baseURL \u001b[33m=\u001b[39m process\u001b[33m.\u001b[39menv\u001b[33m.\u001b[39m\u001b[33mFRONTEND_URL\u001b[39m \u001b[33m||\u001b[39m \u001b[32m'http://localhost:3000'\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 5 |\u001b[39m   \u001b[36mconst\u001b[39m apiURL \u001b[33m=\u001b[39m process\u001b[33m.\u001b[39menv\u001b[33m.\u001b[39m\u001b[33mAPI_URL\u001b[39m \u001b[33m||\u001b[39m \u001b[32m'http://localhost:3000/api/v1'\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 6 |\u001b[39m\u001b[0m"
+    },
+    {
+      "message": "Error: No tests found",
+      "stack": "Error: No tests found"
+    }
+  ],
+  "stats": {
+    "startTime": "2025-07-18T10:24:12.147Z",
+    "duration": 21.848000000000013,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

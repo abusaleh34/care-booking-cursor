@@ -13,17 +13,19 @@ export default defineConfig({
     maxConcurrency: 5,
     bail: 20, // fail-fast after 20 failures
     setupFiles: ['./src/test-setup.ts'],
-    include: ['tests/**/*.spec.ts', 'src/**/*.spec.ts'],
-    exclude: ['node_modules', 'dist', 'care-services-ui'],
+    include: ['tests/unit/**/*.spec.ts', 'tests/integration/**/*.spec.ts', 'src/**/*.spec.ts'],
+    exclude: ['node_modules', 'dist', 'care-services-ui', 'tests/e2e/**'],
     pool: 'threads',
     poolOptions: {
       threads: {
         singleThread: true,
       },
     },
+    testTimeout: 30000, // 30 seconds for individual tests
+    hookTimeout: 30000, // 30 seconds for hooks
   },
   esbuild: {
-    target: 'node14',
+    target: 'node16',
   },
   resolve: {
     alias: {

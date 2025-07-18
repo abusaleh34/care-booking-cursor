@@ -30,20 +30,20 @@ describe('BookingService', () => {
     mockProviderRepository = createMockRepository();
 
     mockAuditService = {
-      log: jest.fn(),
+      log: vi.fn(),
     };
 
     mockCacheService = {
-      getAvailability: jest.fn(),
-      setAvailability: jest.fn(),
-      invalidateAvailability: jest.fn(),
+      getAvailability: vi.fn(),
+      setAvailability: vi.fn(),
+      invalidateAvailability: vi.fn(),
     };
 
     mockRealtimeGateway = {
-      notifyAvailabilityChange: jest.fn(),
-      notifyNewBooking: jest.fn(),
-      notifyBookingCancelled: jest.fn(),
-      notifyBookingStatusChange: jest.fn(),
+      notifyAvailabilityChange: vi.fn(),
+      notifyNewBooking: vi.fn(),
+      notifyBookingCancelled: vi.fn(),
+      notifyBookingStatusChange: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -80,7 +80,7 @@ describe('BookingService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -154,9 +154,9 @@ describe('BookingService', () => {
 
       mockServiceRepository.findOne.mockResolvedValue(mockService);
       mockBookingRepository.createQueryBuilder.mockReturnValue({
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getCount: jest.fn().mockResolvedValue(0), // No conflicts
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        getCount: vi.fn().mockResolvedValue(0), // No conflicts
       });
       mockBookingRepository.create.mockReturnValue(mockBooking);
       mockBookingRepository.save.mockResolvedValue(mockBooking);
@@ -213,9 +213,9 @@ describe('BookingService', () => {
 
       mockServiceRepository.findOne.mockResolvedValue(mockService);
       mockBookingRepository.createQueryBuilder.mockReturnValue({
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getCount: jest.fn().mockResolvedValue(1), // Conflict found
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        getCount: vi.fn().mockResolvedValue(1), // Conflict found
       });
 
       await expect(
@@ -240,9 +240,9 @@ describe('BookingService', () => {
 
       mockServiceRepository.findOne.mockResolvedValue(mockService);
       mockBookingRepository.createQueryBuilder.mockReturnValue({
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        getCount: jest.fn().mockResolvedValue(0),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        getCount: vi.fn().mockResolvedValue(0),
       });
 
       await expect(

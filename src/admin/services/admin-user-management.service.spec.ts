@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { vi } from 'vitest';
 import { AdminUserManagementService } from './admin-user-management.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../database/entities/user.entity';
@@ -22,9 +23,9 @@ describe('AdminUserManagementService', () => {
   let serviceProviderRepository: MockRepository<ServiceProvider>;
   let adminUserRepository: MockRepository<AdminUser>;
   let providerVerificationRepository: MockRepository<ProviderVerification>;
-  let passwordService: jest.Mocked<PasswordService>;
-  let emailService: jest.Mocked<EmailService>;
-  let realtimeGateway: jest.Mocked<RealtimeGateway>;
+  let passwordService: any;
+  let emailService: any;
+  let realtimeGateway: any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,22 +54,22 @@ describe('AdminUserManagementService', () => {
         {
           provide: PasswordService,
           useValue: {
-            hashPassword: jest.fn(),
-            comparePassword: jest.fn(),
+            hashPassword: vi.fn(),
+            comparePassword: vi.fn(),
           },
         },
         {
           provide: EmailService,
           useValue: {
-            sendAdminWelcomeEmail: jest.fn(),
-            sendPasswordResetEmail: jest.fn(),
+            sendAdminWelcomeEmail: vi.fn(),
+            sendPasswordResetEmail: vi.fn(),
           },
         },
         {
           provide: RealtimeGateway,
           useValue: {
-            sendNotification: jest.fn(),
-            broadcastUpdate: jest.fn(),
+            sendNotification: vi.fn(),
+            broadcastUpdate: vi.fn(),
           },
         },
       ],
@@ -185,19 +186,19 @@ describe('AdminUserManagementService', () => {
     it('should return paginated users with filters applied', async () => {
       const mockUsers = [createTestUser(), createTestUser()];
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orWhere: jest.fn().mockReturnThis(),
-        leftJoinAndSelect: jest.fn().mockReturnThis(),
-        innerJoinAndSelect: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getMany: jest.fn().mockResolvedValue(mockUsers),
-        getOne: jest.fn(),
-        getCount: jest.fn().mockResolvedValue(2),
-        getRawMany: jest.fn(),
-        getRawOne: jest.fn(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orWhere: vi.fn().mockReturnThis(),
+        leftJoinAndSelect: vi.fn().mockReturnThis(),
+        innerJoinAndSelect: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getMany: vi.fn().mockResolvedValue(mockUsers),
+        getOne: vi.fn(),
+        getCount: vi.fn().mockResolvedValue(2),
+        getRawMany: vi.fn(),
+        getRawOne: vi.fn(),
       };
       
       userRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);

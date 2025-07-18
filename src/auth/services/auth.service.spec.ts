@@ -6,8 +6,9 @@ import {
   ForbiddenException, 
   UnauthorizedException 
 } from '@nestjs/common';
+import { vi } from 'vitest';
 // Mock bcrypt
-jest.mock('bcrypt');
+vi.mock('bcrypt');
 import * as bcrypt from 'bcrypt';
 
 import { AuthService } from './auth.service';
@@ -56,43 +57,43 @@ describe('AuthService', () => {
   } as unknown as User;
 
   const mockUserRepository = {
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
-    update: jest.fn(),
+    findOne: vi.fn(),
+    create: vi.fn(),
+    save: vi.fn(),
+    update: vi.fn(),
   };
 
   const mockTokenService = {
-    generateTokens: jest.fn(),
-    verifyMfaCode: jest.fn(),
-    generateEmailVerificationToken: jest.fn().mockResolvedValue('verification-token'),
-    generatePasswordResetToken: jest.fn().mockResolvedValue('reset-token'),
-    verifyEmailVerificationToken: jest.fn(),
-    verifyPasswordResetToken: jest.fn(),
+    generateTokens: vi.fn(),
+    verifyMfaCode: vi.fn(),
+    generateEmailVerificationToken: vi.fn().mockResolvedValue('verification-token'),
+    generatePasswordResetToken: vi.fn().mockResolvedValue('reset-token'),
+    verifyEmailVerificationToken: vi.fn(),
+    verifyPasswordResetToken: vi.fn(),
   };
 
   const mockAuditService = {
-    log: jest.fn(),
+    log: vi.fn(),
   };
 
   const mockEmailService = {
-    sendVerificationEmail: jest.fn(),
-    sendPasswordResetEmail: jest.fn(),
+    sendVerificationEmail: vi.fn(),
+    sendPasswordResetEmail: vi.fn(),
   };
 
   const mockPasswordService = {
-    hashPassword: jest.fn(),
-    comparePassword: jest.fn(),
-    validatePasswordStrength: jest.fn(),
+    hashPassword: vi.fn(),
+    comparePassword: vi.fn(),
+    validatePasswordStrength: vi.fn(),
   };
 
   beforeEach(async () => {
     // Reset all mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
     // Setup bcrypt mocks
-    (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password');
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    (bcrypt.hash as any).mockResolvedValue('hashed-password');
+    (bcrypt.compare as any).mockResolvedValue(true);
     
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -104,36 +105,36 @@ describe('AuthService', () => {
         {
           provide: getRepositoryToken(UserProfile),
           useValue: {
-            create: jest.fn().mockImplementation((data) => ({ ...data, id: 'profile-id' })),
-            save: jest.fn().mockImplementation((profile) => Promise.resolve(profile)),
+            create: vi.fn().mockImplementation((data) => ({ ...data, id: 'profile-id' })),
+            save: vi.fn().mockImplementation((profile) => Promise.resolve(profile)),
           },
         },
         {
           provide: getRepositoryToken(UserRole),
           useValue: {
-            create: jest.fn().mockImplementation((data) => ({ ...data, id: 'role-id' })),
-            save: jest.fn().mockImplementation((role) => Promise.resolve(role)),
+            create: vi.fn().mockImplementation((data) => ({ ...data, id: 'role-id' })),
+            save: vi.fn().mockImplementation((role) => Promise.resolve(role)),
           },
         },
         {
           provide: getRepositoryToken(RefreshToken),
           useValue: {
-            create: jest.fn().mockImplementation((data) => ({ ...data, id: 'token-id' })),
-            save: jest.fn().mockImplementation((token) => Promise.resolve(token)),
-            update: jest.fn(),
-            findOne: jest.fn(),
+            create: vi.fn().mockImplementation((data) => ({ ...data, id: 'token-id' })),
+            save: vi.fn().mockImplementation((token) => Promise.resolve(token)),
+            update: vi.fn(),
+            findOne: vi.fn(),
           },
         },
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockReturnValue('mocked-token'),
+            sign: vi.fn().mockReturnValue('mocked-token'),
           },
         },
         {
           provide: ConfigService,
           useValue: {
-            get: jest.fn().mockImplementation((key: string) => {
+            get: vi.fn().mockImplementation((key: string) => {
               const config = {
                 JWT_EXPIRES_IN: '15m',
                 JWT_REFRESH_EXPIRES_IN: '7d',
@@ -146,8 +147,8 @@ describe('AuthService', () => {
         {
           provide: SmsService,
           useValue: {
-            sendVerificationCode: jest.fn(),
-            verifyCode: jest.fn(),
+            sendVerificationCode: vi.fn(),
+            verifyCode: vi.fn(),
           },
         },
         {
@@ -173,7 +174,7 @@ describe('AuthService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('login', () => {
@@ -187,7 +188,7 @@ describe('AuthService', () => {
     it('should successfully login a valid user', async () => {
       // Arrange
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+      vi.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
       mockTokenService.generateTokens.mockResolvedValue({
         accessToken: 'access-token',
         refreshToken: 'refresh-token',
@@ -259,7 +260,7 @@ describe('AuthService', () => {
       const loginDtoWithMfa = { ...loginDto, mfaCode: '123456' };
 
       mockUserRepository.findOne.mockResolvedValue(mfaUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+      vi.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
       mockTokenService.verifyMfaCode.mockResolvedValue(true);
       mockTokenService.generateTokens.mockResolvedValue({
         accessToken: 'access-token',
@@ -278,7 +279,7 @@ describe('AuthService', () => {
       // Arrange
       const mfaUser = { ...mockUser, mfaEnabled: true } as User;
       mockUserRepository.findOne.mockResolvedValue(mfaUser);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+      vi.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
       // Act & Assert
       await expect(service.login(loginDto, ipAddress, userAgent)).rejects.toThrow(
@@ -290,7 +291,7 @@ describe('AuthService', () => {
       // Arrange
       const user = { ...mockUser } as User;
       mockUserRepository.findOne.mockResolvedValue(user);
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
+      vi.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
 
       // Act & Assert
       await expect(service.login(loginDto, ipAddress, userAgent)).rejects.toThrow(

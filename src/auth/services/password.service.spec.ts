@@ -1,26 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PasswordService } from './password.service';
 import { ConfigService } from '@nestjs/config';
+import { vi } from 'vitest';
+import { mockConfigService } from '../../test-setup';
 
 // Mock bcrypt
-jest.mock('bcrypt');
+vi.mock('bcrypt');
 
 import * as bcrypt from 'bcrypt';
 
 describe('PasswordService', () => {
   let service: PasswordService;
-
-  const mockConfigService = {
-    get: jest.fn().mockReturnValue('12'),
-  };
+  let module: TestingModule;
 
   beforeEach(async () => {
     // Reset and setup bcrypt mocks
-    jest.clearAllMocks();
-    (bcrypt.hash as jest.Mock).mockResolvedValue('mocked-hash');
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    vi.clearAllMocks();
+    (bcrypt.hash as any).mockResolvedValue('mocked-hash');
+    (bcrypt.compare as any).mockResolvedValue(true);
 
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       providers: [
         PasswordService,
         {
@@ -33,8 +32,14 @@ describe('PasswordService', () => {
     service = module.get<PasswordService>(PasswordService);
   });
 
+  afterAll(async () => {
+    if (module) {
+      await module.close();
+    }
+  });
+
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -82,7 +87,7 @@ describe('PasswordService', () => {
     });
 
     it('should reject invalid password', async () => {
-      (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
+      (bcrypt.compare as any).mockResolvedValueOnce(false);
       const password = 'wrongPassword456!';
       const hash = 'valid-hash';
 
@@ -205,7 +210,7 @@ describe('PasswordService', () => {
     });
 
     it('should reject invalid data against hash', async () => {
-      (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
+      (bcrypt.compare as any).mockResolvedValueOnce(false);
       const data = 'wrong-data';
       const hash = 'valid-hash';
 
