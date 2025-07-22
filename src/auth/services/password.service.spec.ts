@@ -13,6 +13,17 @@ describe('PasswordService', () => {
   let service: PasswordService;
   let module: TestingModule;
 
+  const mockConfigService = {
+    get: vi.fn((key: string) => {
+      const config = {
+        'BCRYPT_ROUNDS': '12',
+        'JWT_SECRET': 'test-secret',
+        'JWT_EXPIRES_IN': '1h'
+      };
+      return config[key] || '12';
+    }),
+  };
+
   beforeEach(async () => {
     // Reset and setup bcrypt mocks
     vi.clearAllMocks();

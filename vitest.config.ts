@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
+import 'reflect-metadata';
 
 export default defineConfig({
   test: {

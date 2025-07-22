@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import 'reflect-metadata';
 import {
   Check,
   Column,

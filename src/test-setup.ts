@@ -176,6 +176,12 @@ export const mockConfigService = {
       DATABASE_PORT: 5432,
       REDIS_HOST: 'localhost',
       REDIS_PORT: 6379,
+      BCRYPT_ROUNDS: '12',
+      SMTP_HOST: 'smtp.test.com',
+      SMTP_PORT: 587,
+      SMTP_USER: 'test@test.com',
+      SMTP_PASS: 'testpass',
+      NODE_ENV: 'test'
     };
     return config[key] || defaultValue;
   }),

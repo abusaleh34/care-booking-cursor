@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import 'reflect-metadata';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -23,46 +25,46 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
   @Column({ type: 'varchar', length: 20, unique: true, nullable: true })
   phone: string;
 
-  @Column({ name: 'password_hash' })
+  @Column({ type: 'varchar', length: 255, name: 'password_hash' })
   passwordHash: string;
 
-  @Column({ default: true, name: 'is_active' })
+  @Column({ type: 'boolean', default: true, name: 'is_active' })
   isActive: boolean;
 
-  @Column({ default: false, name: 'is_verified' })
+  @Column({ type: 'boolean', default: false, name: 'is_verified' })
   isVerified: boolean;
 
-  @Column({ nullable: true, name: 'verification_token' })
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'verification_token' })
   verificationToken: string;
 
-  @Column({ nullable: true, name: 'verification_token_expires' })
+  @Column({ type: 'timestamp', nullable: true, name: 'verification_token_expires' })
   verificationTokenExpires: Date;
 
-  @Column({ nullable: true, name: 'password_reset_token' })
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'password_reset_token' })
   passwordResetToken: string;
 
-  @Column({ nullable: true, name: 'password_reset_expires' })
+  @Column({ type: 'timestamp', nullable: true, name: 'password_reset_expires' })
   passwordResetExpiry: Date;
 
-  @Column({ nullable: true, name: 'last_login_at' })
+  @Column({ type: 'timestamp', nullable: true, name: 'last_login_at' })
   lastLoginAt: Date;
 
-  @Column({ default: 0, name: 'failed_login_attempts' })
+  @Column({ type: 'int', default: 0, name: 'failed_login_attempts' })
   failedLoginAttempts: number;
 
-  @Column({ nullable: true, name: 'locked_until' })
+  @Column({ type: 'timestamp', nullable: true, name: 'locked_until' })
   lockedUntil: Date;
 
-  @Column({ default: false, name: 'mfa_enabled' })
+  @Column({ type: 'boolean', default: false, name: 'mfa_enabled' })
   mfaEnabled: boolean;
 
-  @Column({ nullable: true, name: 'last_login_ip' })
+  @Column({ type: 'varchar', length: 45, nullable: true, name: 'last_login_ip' })
   lastLoginIp: string;
 
   @CreateDateColumn({ name: 'created_at' })
