@@ -20,14 +20,14 @@ import { ProviderVerification } from './entities/provider-verification.entity';
 import { Dispute } from './entities/dispute.entity';
 import { PlatformSetting } from './entities/platform-setting.entity';
 
-
 const configService = new ConfigService();
 
 const AppDataSource = new DataSource({
   type: 'postgres',
   host: configService.get('DATABASE_HOST') || 'localhost',
   port: configService.get('DATABASE_PORT') || 5432,
-  username: configService.get('DATABASE_USER') || configService.get('DATABASE_USERNAME') || 'postgres',
+  username:
+    configService.get('DATABASE_USER') || configService.get('DATABASE_USERNAME') || 'postgres',
   password: configService.get('DATABASE_PASSWORD') || 'postgres123',
   database: configService.get('DATABASE_NAME') || 'care_services_db',
   synchronize: configService.get('NODE_ENV') === 'development',

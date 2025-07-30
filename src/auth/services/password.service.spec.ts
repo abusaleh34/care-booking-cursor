@@ -16,9 +16,9 @@ describe('PasswordService', () => {
   const mockConfigService = {
     get: vi.fn((key: string) => {
       const config = {
-        'BCRYPT_ROUNDS': '12',
-        'JWT_SECRET': 'test-secret',
-        'JWT_EXPIRES_IN': '1h'
+        BCRYPT_ROUNDS: '12',
+        JWT_SECRET: 'test-secret',
+        JWT_EXPIRES_IN: '1h',
       };
       return config[key] || '12';
     }),

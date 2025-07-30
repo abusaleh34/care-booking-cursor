@@ -200,7 +200,7 @@ describe('AdminUserManagementService', () => {
         getRawMany: vi.fn(),
         getRawOne: vi.fn(),
       };
-      
+
       userRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       const result = await service.getUsers(filter);
@@ -299,16 +299,16 @@ describe('AdminUserManagementService', () => {
         }),
       );
     });
-    
+
     it('should throw NotFoundException if some users not found', async () => {
       const partialBulkAction = {
         userIds: ['user-1', 'user-2', 'user-3'],
         action: 'suspend' as const,
         reason: 'Bulk suspension',
       };
-      
+
       userRepository.findBy.mockResolvedValue([createTestUser({ id: 'user-1' })]); // Only one user found
-      
+
       await expect(service.performBulkAction(partialBulkAction, adminId)).rejects.toThrow(
         NotFoundException,
       );

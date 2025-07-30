@@ -10,7 +10,7 @@ import { BookingActionDto, BookingsQueryDto, RescheduleRequestDto } from '../dto
 @Injectable()
 export class ProviderBookingService {
   private readonly logger = new Logger(ProviderBookingService.name);
-  
+
   constructor(
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
@@ -58,11 +58,16 @@ export class ProviderBookingService {
         .getMany();
 
       // Transform bookings to match expected format
-      const transformedBookings = bookings.map(booking => ({
+      const transformedBookings = bookings.map((booking) => ({
         id: booking.id,
-        customerName: `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() || 'Unknown',
+        customerName:
+          `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() ||
+          'Unknown',
         serviceName: booking.service?.name || '',
-        date: booking.scheduledDate instanceof Date ? booking.scheduledDate.toISOString().split('T')[0] : booking.scheduledDate,
+        date:
+          booking.scheduledDate instanceof Date
+            ? booking.scheduledDate.toISOString().split('T')[0]
+            : booking.scheduledDate,
         time: booking.scheduledTime,
         amount: booking.totalPrice,
         status: booking.status,
@@ -71,14 +76,14 @@ export class ProviderBookingService {
           firstName: booking.customer?.profile?.firstName || '',
           lastName: booking.customer?.profile?.lastName || '',
           email: booking.customer?.email || '',
-          phone: booking.customer?.phone || ''
+          phone: booking.customer?.phone || '',
         },
         service: {
           id: booking.service?.id,
           name: booking.service?.name || '',
           duration: booking.service?.durationMinutes || booking.duration || 0,
-          price: booking.service?.price || booking.totalPrice
-        }
+          price: booking.service?.price || booking.totalPrice,
+        },
       }));
 
       return { bookings: transformedBookings, total, page, limit };
@@ -104,12 +109,12 @@ export class ProviderBookingService {
   async getTodayBookings(providerId: string): Promise<any[]> {
     try {
       this.logger.debug(`Getting today's bookings for provider ${providerId}`);
-      
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
+
       this.logger.debug(`Today date range: ${today.toISOString()} to ${tomorrow.toISOString()}`);
 
       const bookings = await this.bookingRepository.find({
@@ -121,15 +126,20 @@ export class ProviderBookingService {
         relations: ['customer', 'customer.profile', 'service'],
         order: { scheduledTime: 'ASC' },
       });
-      
+
       this.logger.debug(`Found ${bookings.length} bookings for today`);
 
       // Transform bookings to match expected format (same as getBookings)
-      return bookings.map(booking => ({
+      return bookings.map((booking) => ({
         id: booking.id,
-        customerName: `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() || 'Unknown',
+        customerName:
+          `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() ||
+          'Unknown',
         serviceName: booking.service?.name || '',
-        date: booking.scheduledDate instanceof Date ? booking.scheduledDate.toISOString().split('T')[0] : booking.scheduledDate,
+        date:
+          booking.scheduledDate instanceof Date
+            ? booking.scheduledDate.toISOString().split('T')[0]
+            : booking.scheduledDate,
         time: booking.scheduledTime,
         amount: booking.totalPrice,
         status: booking.status,
@@ -138,14 +148,14 @@ export class ProviderBookingService {
           firstName: booking.customer?.profile?.firstName || '',
           lastName: booking.customer?.profile?.lastName || '',
           email: booking.customer?.email || '',
-          phone: booking.customer?.phone || ''
+          phone: booking.customer?.phone || '',
         },
         service: {
           id: booking.service?.id,
           name: booking.service?.name || '',
           duration: booking.service?.durationMinutes || booking.duration || 0,
-          price: booking.service?.price || booking.totalPrice
-        }
+          price: booking.service?.price || booking.totalPrice,
+        },
       }));
     } catch (error) {
       this.logger.error('Error getting today bookings:', error);
@@ -170,11 +180,16 @@ export class ProviderBookingService {
       });
 
       // Transform bookings to match expected format (same as getBookings)
-      return bookings.map(booking => ({
+      return bookings.map((booking) => ({
         id: booking.id,
-        customerName: `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() || 'Unknown',
+        customerName:
+          `${booking.customer?.profile?.firstName || ''} ${booking.customer?.profile?.lastName || ''}`.trim() ||
+          'Unknown',
         serviceName: booking.service?.name || '',
-        date: booking.scheduledDate instanceof Date ? booking.scheduledDate.toISOString().split('T')[0] : booking.scheduledDate,
+        date:
+          booking.scheduledDate instanceof Date
+            ? booking.scheduledDate.toISOString().split('T')[0]
+            : booking.scheduledDate,
         time: booking.scheduledTime,
         amount: booking.totalPrice,
         status: booking.status,
@@ -183,14 +198,14 @@ export class ProviderBookingService {
           firstName: booking.customer?.profile?.firstName || '',
           lastName: booking.customer?.profile?.lastName || '',
           email: booking.customer?.email || '',
-          phone: booking.customer?.phone || ''
+          phone: booking.customer?.phone || '',
         },
         service: {
           id: booking.service?.id,
           name: booking.service?.name || '',
           duration: booking.service?.durationMinutes || booking.duration || 0,
-          price: booking.service?.price || booking.totalPrice
-        }
+          price: booking.service?.price || booking.totalPrice,
+        },
       }));
     } catch (error) {
       this.logger.error('Error getting upcoming bookings:', error);

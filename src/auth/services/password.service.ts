@@ -22,16 +22,16 @@ export class PasswordService {
     const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
     const passwordLength = 12;
     let password = '';
-    
+
     // Generate random bytes
     const randomBytes = crypto.randomBytes(passwordLength);
-    
+
     for (let i = 0; i < passwordLength; i++) {
       // Use modulo to map random byte to character index
       const charIndex = randomBytes[i] % chars.length;
       password += chars.charAt(charIndex);
     }
-    
+
     return password;
   }
 

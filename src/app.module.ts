@@ -14,7 +14,6 @@ import { AppController } from './app.controller';
 import { MockAuthController } from './controllers/mock-auth.controller';
 import { winstonConfig } from './common/logger/winston.config';
 
-
 // Database entities
 import { User } from './database/entities/user.entity';
 import { UserProfile } from './database/entities/user-profile.entity';
@@ -55,7 +54,10 @@ import { WebSocketModule } from './websocket/websocket.module';
         type: 'postgres',
         host: configService.get('DATABASE_HOST') || 'localhost',
         port: configService.get('DATABASE_PORT') || 5432,
-        username: configService.get('DATABASE_USER') || configService.get('DATABASE_USERNAME') || 'postgres',
+        username:
+          configService.get('DATABASE_USER') ||
+          configService.get('DATABASE_USERNAME') ||
+          'postgres',
         password: configService.get('DATABASE_PASSWORD') || 'postgres123',
         database: configService.get('DATABASE_NAME') || 'care_services_db',
         entities: [

@@ -5,7 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 // Global test configuration
 global.console = {
@@ -181,7 +181,7 @@ export const mockConfigService = {
       SMTP_PORT: 587,
       SMTP_USER: 'test@test.com',
       SMTP_PASS: 'testpass',
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
     };
     return config[key] || defaultValue;
   }),

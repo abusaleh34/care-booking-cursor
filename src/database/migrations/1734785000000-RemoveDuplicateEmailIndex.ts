@@ -13,7 +13,9 @@ export class RemoveDuplicateEmailIndex1734785000000 implements MigrationInterfac
 
     // Ensure the unique constraint exists on email column
     try {
-      await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "UQ_97672ac88f789774dd47f7c8be" UNIQUE ("email")`);
+      await queryRunner.query(
+        `ALTER TABLE "users" ADD CONSTRAINT "UQ_97672ac88f789774dd47f7c8be" UNIQUE ("email")`,
+      );
     } catch (error) {
       console.log('Unique constraint might already exist, continuing...');
     }
@@ -21,6 +23,8 @@ export class RemoveDuplicateEmailIndex1734785000000 implements MigrationInterfac
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Revert changes if needed
-    await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "UQ_97672ac88f789774dd47f7c8be"`);
+    await queryRunner.query(
+      `ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "UQ_97672ac88f789774dd47f7c8be"`,
+    );
   }
 }

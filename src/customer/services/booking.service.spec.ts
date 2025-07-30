@@ -13,7 +13,12 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { createMockRepository, createTestBooking, createTestService, createTestProvider } from '../../test-setup';
+import {
+  createMockRepository,
+  createTestBooking,
+  createTestProvider,
+  createTestService,
+} from '../../test-setup';
 
 describe('BookingService', () => {
   let service: BookingService;
@@ -94,7 +99,7 @@ describe('BookingService', () => {
       const futureDate = new Date();
       futureDate.setDate(futureDate.getDate() + 7);
       const bookingDate = futureDate.toISOString().split('T')[0];
-      
+
       const createBookingDto = {
         providerId: 'provider-id',
         serviceId: 'service-id',
@@ -111,7 +116,7 @@ describe('BookingService', () => {
         durationMinutes: 60,
         providerId: 'provider-id',
       });
-      
+
       // Add provider property
       mockService.provider = {
         id: 'provider-id',
@@ -314,32 +319,52 @@ describe('BookingService', () => {
       const customerId = 'customer-id';
       const mockBookings = [
         {
-          ...createTestBooking({ 
-            id: 'booking-1', 
+          ...createTestBooking({
+            id: 'booking-1',
             customerId,
             scheduledDate: new Date('2025-01-10'),
             scheduledTime: '10:00',
           }),
-          get bookingDate() { return this.scheduledDate; },
-          get startTime() { return this.scheduledTime; },
-          get endTime() { return '11:00'; },
-          get totalAmount() { return this.totalPrice; },
-          get notes() { return this.customerNotes || ''; },
+          get bookingDate() {
+            return this.scheduledDate;
+          },
+          get startTime() {
+            return this.scheduledTime;
+          },
+          get endTime() {
+            return '11:00';
+          },
+          get totalAmount() {
+            return this.totalPrice;
+          },
+          get notes() {
+            return this.customerNotes || '';
+          },
           service: createTestService(),
           provider: createTestProvider(),
         },
         {
-          ...createTestBooking({ 
-            id: 'booking-2', 
+          ...createTestBooking({
+            id: 'booking-2',
             customerId,
             scheduledDate: new Date('2025-01-11'),
             scheduledTime: '14:00',
           }),
-          get bookingDate() { return this.scheduledDate; },
-          get startTime() { return this.scheduledTime; },
-          get endTime() { return '15:00'; },
-          get totalAmount() { return this.totalPrice; },
-          get notes() { return this.customerNotes || ''; },
+          get bookingDate() {
+            return this.scheduledDate;
+          },
+          get startTime() {
+            return this.scheduledTime;
+          },
+          get endTime() {
+            return '15:00';
+          },
+          get totalAmount() {
+            return this.totalPrice;
+          },
+          get notes() {
+            return this.customerNotes || '';
+          },
           service: createTestService(),
           provider: createTestProvider(),
         },
@@ -364,17 +389,27 @@ describe('BookingService', () => {
       const bookingId = 'booking-id';
       const customerId = 'customer-id';
       const mockBooking = {
-        ...createTestBooking({ 
-          id: bookingId, 
+        ...createTestBooking({
+          id: bookingId,
           customerId,
           scheduledDate: new Date('2025-01-10'),
           scheduledTime: '10:00',
         }),
-        get bookingDate() { return this.scheduledDate; },
-        get startTime() { return this.scheduledTime; },
-        get endTime() { return '11:00'; },
-        get totalAmount() { return this.totalPrice; },
-        get notes() { return this.customerNotes || ''; },
+        get bookingDate() {
+          return this.scheduledDate;
+        },
+        get startTime() {
+          return this.scheduledTime;
+        },
+        get endTime() {
+          return '11:00';
+        },
+        get totalAmount() {
+          return this.totalPrice;
+        },
+        get notes() {
+          return this.customerNotes || '';
+        },
         service: createTestService(),
         provider: createTestProvider(),
       };

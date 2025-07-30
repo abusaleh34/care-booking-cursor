@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { 
-  BadRequestException, 
+import {
+  BadRequestException,
   ConflictException,
-  ForbiddenException, 
-  UnauthorizedException 
+  ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { vi } from 'vitest';
 // Mock bcrypt
@@ -90,11 +90,11 @@ describe('AuthService', () => {
   beforeEach(async () => {
     // Reset all mocks
     vi.clearAllMocks();
-    
+
     // Setup bcrypt mocks
     (bcrypt.hash as any).mockResolvedValue('hashed-password');
     (bcrypt.compare as any).mockResolvedValue(true);
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,

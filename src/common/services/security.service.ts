@@ -35,7 +35,8 @@ export class SecurityService {
   >();
 
   constructor(private readonly configService: ConfigService) {
-    const key = this.configService.get<string>('ENCRYPTION_KEY') || 'default-key-change-in-production';
+    const key =
+      this.configService.get<string>('ENCRYPTION_KEY') || 'default-key-change-in-production';
     // Ensure key is 32 bytes for AES-256
     this.encryptionKey = crypto.scryptSync(key, 'salt', 32);
   }
@@ -96,20 +97,20 @@ export class SecurityService {
     try {
       // Generate a random IV
       const iv = crypto.randomBytes(this.ivLength);
-      
+
       // Create cipher
       const cipher = crypto.createCipheriv(this.algorithm, this.encryptionKey, iv);
-      
+
       // Encrypt the plaintext
       let encrypted = cipher.update(plaintext, 'utf8');
       encrypted = Buffer.concat([encrypted, cipher.final()]);
-      
+
       // Get the auth tag
       const authTag = cipher.getAuthTag();
-      
+
       // Combine IV + authTag + encrypted data
       const combined = Buffer.concat([iv, authTag, encrypted]);
-      
+
       // Return base64 encoded
       return combined.toString('base64');
     } catch (error) {
@@ -124,20 +125,20 @@ export class SecurityService {
     try {
       // Decode from base64
       const combined = Buffer.from(encryptedData, 'base64');
-      
+
       // Extract IV, auth tag, and encrypted data
       const iv = combined.slice(0, this.ivLength);
       const authTag = combined.slice(this.ivLength, this.ivLength + this.tagLength);
       const encrypted = combined.slice(this.ivLength + this.tagLength);
-      
+
       // Create decipher
       const decipher = crypto.createDecipheriv(this.algorithm, this.encryptionKey, iv);
       decipher.setAuthTag(authTag);
-      
+
       // Decrypt
       let decrypted = decipher.update(encrypted);
       decrypted = Buffer.concat([decrypted, decipher.final()]);
-      
+
       return decrypted.toString('utf8');
     } catch (error) {
       this.logger.error('Decryption failed', error);

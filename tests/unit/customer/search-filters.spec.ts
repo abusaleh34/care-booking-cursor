@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ServiceProvider } from '../../../src/database/entities/service-provider.entity';
 import { Service } from '../../../src/database/entities/service.entity';
 import { ServiceCategory } from '../../../src/database/entities/service-category.entity';
@@ -96,15 +97,21 @@ describe('Customer Search Service - Advanced Filters', () => {
     },
   ];
 
-  beforeEach(async () => {
+  // Mock CacheService that doesn't depend on CACHE_MANAGER
+class MockCacheService {
+  generateSearchKey = vi.fn().mockReturnValue('test-search-key');
+  getSearchResults = vi.fn().mockResolvedValue(null);
+  setSearchResults = vi.fn().mockResolvedValue(undefined);
+  get = vi.fn().mockResolvedValue(null);
+  set = vi.fn().mockResolvedValue(undefined);
+  del = vi.fn().mockResolvedValue(undefined);
+}
+
+// ... later in the file ...
+
+beforeEach(async () => {
     const mockServiceProviderRepository = {
       createQueryBuilder: vi.fn(),
-    };
-
-    const mockCacheService = {
-      get: vi.fn(),
-      set: vi.fn(),
-      del: vi.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -125,15 +132,24 @@ describe('Customer Search Service - Advanced Filters', () => {
           },
         },
         {
-          provide: CacheService,
-          useValue: mockCacheService,
+          provide: 'CacheService',
+          useClass: MockCacheService
         },
+        {
+          provide: CACHE_MANAGER,
+          useValue: {
+            get: vi.fn().mockResolvedValue(null),
+            set: vi.fn().mockResolvedValue(undefined),
+            del: vi.fn().mockResolvedValue(undefined),
+            reset: vi.fn().mockResolvedValue(undefined)
+          }
+        }
       ],
     }).compile();
 
     service = module.get<SearchService>(SearchService);
     serviceProviderRepository = module.get(getRepositoryToken(ServiceProvider));
-    cacheService = module.get<CacheService>(CacheService);
+    cacheService = module.get('CacheService');
   });
 
   describe('Text Search', () => {

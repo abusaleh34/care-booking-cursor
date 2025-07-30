@@ -18,8 +18,8 @@ export class RegisterDto {
 
   @IsOptional()
   @IsString()
-  @Matches(/^\+?[1-9]\d{1,14}$/, { 
-    message: 'Please provide a valid phone number (E.164 format)' 
+  @Matches(/^\+?[1-9]\d{1,14}$/, {
+    message: 'Please provide a valid phone number (E.164 format)',
   })
   phone?: string;
 

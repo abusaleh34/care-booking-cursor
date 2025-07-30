@@ -137,8 +137,9 @@ export class ProviderDashboardService {
       unreadMessages: 0, // TODO: Implement message counting
       recentBookings: recentBookings.map((booking) => ({
         id: booking.id,
-        customerName: booking.customer?.profile ? 
-          `${booking.customer.profile.firstName} ${booking.customer.profile.lastName}` : 'Unknown',
+        customerName: booking.customer?.profile
+          ? `${booking.customer.profile.firstName} ${booking.customer.profile.lastName}`
+          : 'Unknown',
         serviceName: booking.service?.name,
         date: booking.scheduledDate,
         time: booking.scheduledTime,

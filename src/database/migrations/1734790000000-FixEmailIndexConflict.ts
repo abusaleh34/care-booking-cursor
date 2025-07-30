@@ -104,14 +104,14 @@ export class FixEmailIndexConflict1734790000000 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     // In the down migration, we'll restore the original state
     // But we'll be careful not to create duplicates
-    
+
     // Drop the constraints we created
     await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT IF EXISTS "UQ_users_email"`);
-    
+
     // Drop the indexes we created
     await queryRunner.query(`DROP INDEX IF EXISTS "IDX_users_is_active_is_verified"`);
     await queryRunner.query(`DROP INDEX IF EXISTS "IDX_users_created_at"`);
-    
+
     // Recreate the original index (if needed for rollback compatibility)
     await queryRunner.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS "IDX_97672ac88f789774dd47f7c8be" 

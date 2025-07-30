@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 import { SearchService } from '../../../src/customer/services/search.service';
 import { ServiceProvider } from '../../../src/database/entities/service-provider.entity';
@@ -60,7 +61,19 @@ describe('SearchService', () => {
     getMany: vi.fn().mockResolvedValue([mockServiceProvider])
   };
 
-  beforeEach(async () => {
+  // Mock CacheService that doesn't depend on CACHE_MANAGER
+class MockCacheService {
+  generateSearchKey = vi.fn().mockReturnValue('test-search-key');
+  getSearchResults = vi.fn().mockResolvedValue(null);
+  setSearchResults = vi.fn().mockResolvedValue(undefined);
+  get = vi.fn().mockResolvedValue(null);
+  set = vi.fn().mockResolvedValue(undefined);
+  del = vi.fn().mockResolvedValue(undefined);
+}
+
+// ... later in the file ...
+
+beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SearchService,
@@ -87,21 +100,25 @@ describe('SearchService', () => {
           }
         },
         {
-          provide: CacheService,
+          provide: 'CacheService',
+          useClass: MockCacheService
+        },
+        {
+          provide: CACHE_MANAGER,
           useValue: {
-            generateSearchKey: vi.fn(),
-            getSearchResults: vi.fn(),
-            setSearchResults: vi.fn()
+            get: vi.fn().mockResolvedValue(null),
+            set: vi.fn().mockResolvedValue(undefined),
+            del: vi.fn().mockResolvedValue(undefined),
+            reset: vi.fn().mockResolvedValue(undefined)
           }
         }
       ]
     }).compile();
-
     service = module.get<SearchService>(SearchService);
     serviceProviderRepository = module.get(getRepositoryToken(ServiceProvider));
     serviceRepository = module.get(getRepositoryToken(Service));
     serviceCategoryRepository = module.get(getRepositoryToken(ServiceCategory));
-    cacheService = module.get(CacheService);
+    cacheService = module.get('CacheService');
 
     vi.clearAllMocks();
   });

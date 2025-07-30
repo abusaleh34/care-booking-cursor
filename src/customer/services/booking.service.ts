@@ -77,136 +77,142 @@ export class BookingService {
   ): Promise<BookingResult> {
     try {
       const { providerId, serviceId, bookingDate, startTime, notes } = createBookingDto;
-      
-      this.logger.debug(`Creating booking for customer ${customerId}, provider ${providerId}, service ${serviceId}, date ${bookingDate}, time ${startTime}`);
 
-    // Validate service and provider
-    const service = await this.serviceRepository.findOne({
-      where: { id: serviceId, isActive: true },
-      relations: ['provider'],
-    });
+      this.logger.debug(
+        `Creating booking for customer ${customerId}, provider ${providerId}, service ${serviceId}, date ${bookingDate}, time ${startTime}`,
+      );
 
-    if (!service) {
-      throw new NotFoundException('Service not found');
-    }
-
-    if (service.providerId !== providerId) {
-      throw new BadRequestException('Service does not belong to the specified provider');
-    }
-
-    // Check if provider is loaded and active
-    if (service.provider && !service.provider.isActive) {
-      throw new BadRequestException('Service provider is not active');
-    }
-    
-    // If provider not loaded, verify separately
-    if (!service.provider) {
-      const provider = await this.serviceProviderRepository.findOne({
-        where: { id: providerId, isActive: true },
+      // Validate service and provider
+      const service = await this.serviceRepository.findOne({
+        where: { id: serviceId, isActive: true },
+        relations: ['provider'],
       });
-      if (!provider) {
+
+      if (!service) {
+        throw new NotFoundException('Service not found');
+      }
+
+      if (service.providerId !== providerId) {
+        throw new BadRequestException('Service does not belong to the specified provider');
+      }
+
+      // Check if provider is loaded and active
+      if (service.provider && !service.provider.isActive) {
         throw new BadRequestException('Service provider is not active');
       }
-    }
 
-    // Calculate end time
-    const endTime = this.calculateEndTime(startTime, service.durationMinutes);
+      // If provider not loaded, verify separately
+      if (!service.provider) {
+        const provider = await this.serviceProviderRepository.findOne({
+          where: { id: providerId, isActive: true },
+        });
+        if (!provider) {
+          throw new BadRequestException('Service provider is not active');
+        }
+      }
 
-    // Check availability
-    const isAvailable = await this.checkTimeSlotAvailability(
-      providerId,
-      bookingDate,
-      startTime,
-      endTime,
-    );
+      // Calculate end time
+      const endTime = this.calculateEndTime(startTime, service.durationMinutes);
 
-    if (!isAvailable) {
-      throw new ConflictException('The selected time slot is not available');
-    }
-
-    // Validate booking date (must be future date)
-    const bookingDateTime = new Date(`${bookingDate}T${startTime}`);
-    const now = new Date();
-
-    if (bookingDateTime <= now) {
-      throw new BadRequestException('Booking date must be in the future');
-    }
-
-    // Check if booking is too far in advance (optional business rule)
-    const maxAdvanceBookingDays = 90;
-    const maxBookingDate = new Date();
-    maxBookingDate.setDate(maxBookingDate.getDate() + maxAdvanceBookingDays);
-
-    if (bookingDateTime > maxBookingDate) {
-      throw new BadRequestException(
-        `Bookings can only be made up to ${maxAdvanceBookingDays} days in advance`,
-      );
-    }
-
-    // Create booking
-    const price = Number(service.price);
-    const booking = this.bookingRepository.create({
-      customerId,
-      providerId,
-      serviceId,
-      scheduledDate: new Date(bookingDate),
-      scheduledTime: startTime,
-      duration: service.durationMinutes,
-      totalPrice: price,
-      platformFee: price * 0.1,
-      providerEarnings: price * 0.9,
-      customerNotes: notes,
-      status: BookingStatus.PENDING,
-      paymentStatus: PaymentStatus.PENDING,
-    });
-
-    const savedBooking = await this.bookingRepository.save(booking);
-
-    // Invalidate availability cache for this provider and date
-    await this.cacheService.invalidateAvailability(providerId, bookingDate);
-
-    // Get updated availability and notify via WebSocket
-    const updatedAvailability = await this.getAvailability({
-      providerId,
-      serviceId,
-      date: bookingDate,
-    });
-
-    this.realtimeGateway.notifyAvailabilityChange(providerId, bookingDate, updatedAvailability);
-
-    // Get the saved booking with relations
-    const bookingWithRelations = await this.bookingRepository.findOne({
-      where: { id: savedBooking.id },
-      relations: ['service', 'provider'],
-    });
-    
-    // Notify provider about new booking
-    const bookingResult = this.transformBookingResult(bookingWithRelations!, service);
-    if (bookingWithRelations?.provider?.userId) {
-      this.realtimeGateway.notifyNewBooking(bookingResult, bookingWithRelations.provider.userId);
-    }
-
-    // Log booking creation
-    await this.auditService.log({
-      userId: customerId,
-      action: AuditAction.REGISTER, // You might want to add a BOOKING_CREATED action
-      description: `Booking created for service ${service.name}`,
-      ipAddress,
-      userAgent,
-      metadata: {
-        bookingId: savedBooking.id,
+      // Check availability
+      const isAvailable = await this.checkTimeSlotAvailability(
         providerId,
-        serviceId,
         bookingDate,
         startTime,
-      },
-    });
+        endTime,
+      );
 
-    return bookingResult;
+      if (!isAvailable) {
+        throw new ConflictException('The selected time slot is not available');
+      }
+
+      // Validate booking date (must be future date)
+      const bookingDateTime = new Date(`${bookingDate}T${startTime}`);
+      const now = new Date();
+
+      if (bookingDateTime <= now) {
+        throw new BadRequestException('Booking date must be in the future');
+      }
+
+      // Check if booking is too far in advance (optional business rule)
+      const maxAdvanceBookingDays = 90;
+      const maxBookingDate = new Date();
+      maxBookingDate.setDate(maxBookingDate.getDate() + maxAdvanceBookingDays);
+
+      if (bookingDateTime > maxBookingDate) {
+        throw new BadRequestException(
+          `Bookings can only be made up to ${maxAdvanceBookingDays} days in advance`,
+        );
+      }
+
+      // Create booking
+      const price = Number(service.price);
+      const booking = this.bookingRepository.create({
+        customerId,
+        providerId,
+        serviceId,
+        scheduledDate: new Date(bookingDate),
+        scheduledTime: startTime,
+        duration: service.durationMinutes,
+        totalPrice: price,
+        platformFee: price * 0.1,
+        providerEarnings: price * 0.9,
+        customerNotes: notes,
+        status: BookingStatus.PENDING,
+        paymentStatus: PaymentStatus.PENDING,
+      });
+
+      const savedBooking = await this.bookingRepository.save(booking);
+
+      // Invalidate availability cache for this provider and date
+      await this.cacheService.invalidateAvailability(providerId, bookingDate);
+
+      // Get updated availability and notify via WebSocket
+      const updatedAvailability = await this.getAvailability({
+        providerId,
+        serviceId,
+        date: bookingDate,
+      });
+
+      this.realtimeGateway.notifyAvailabilityChange(providerId, bookingDate, updatedAvailability);
+
+      // Get the saved booking with relations
+      const bookingWithRelations = await this.bookingRepository.findOne({
+        where: { id: savedBooking.id },
+        relations: ['service', 'provider'],
+      });
+
+      // Notify provider about new booking
+      const bookingResult = this.transformBookingResult(bookingWithRelations!, service);
+      if (bookingWithRelations?.provider?.userId) {
+        this.realtimeGateway.notifyNewBooking(bookingResult, bookingWithRelations.provider.userId);
+      }
+
+      // Log booking creation
+      await this.auditService.log({
+        userId: customerId,
+        action: AuditAction.REGISTER, // You might want to add a BOOKING_CREATED action
+        description: `Booking created for service ${service.name}`,
+        ipAddress,
+        userAgent,
+        metadata: {
+          bookingId: savedBooking.id,
+          providerId,
+          serviceId,
+          bookingDate,
+          startTime,
+        },
+      });
+
+      return bookingResult;
     } catch (error) {
       this.logger.error(`Error creating booking: ${error.message}`, error.stack);
       this.logger.error('Full error:', error);
-      if (error instanceof NotFoundException || error instanceof BadRequestException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
       throw new BadRequestException(`Failed to create booking: ${error.message}`);
@@ -216,12 +222,18 @@ export class BookingService {
   async getAvailability(getAvailabilityDto: GetAvailabilityDto): Promise<AvailabilitySlot[]> {
     try {
       const { providerId, serviceId, date } = getAvailabilityDto;
-      
-      this.logger.debug(`Getting availability for provider ${providerId}, service ${serviceId}, date ${date}`);
+
+      this.logger.debug(
+        `Getting availability for provider ${providerId}, service ${serviceId}, date ${date}`,
+      );
 
       // Try cache first
       try {
-        const cachedAvailability = await this.cacheService.getAvailability(providerId, serviceId, date);
+        const cachedAvailability = await this.cacheService.getAvailability(
+          providerId,
+          serviceId,
+          date,
+        );
         if (cachedAvailability) {
           this.logger.debug(`Returning cached availability for ${providerId} on ${date}`);
           return cachedAvailability;
@@ -230,50 +242,50 @@ export class BookingService {
         this.logger.warn(`Cache error: ${error.message}`);
       }
 
-    // Validate service
-    const service = await this.serviceRepository.findOne({
-      where: { id: serviceId, isActive: true },
-    });
-
-    if (!service || service.providerId !== providerId) {
-      throw new NotFoundException('Service not found');
-    }
-
-    // Generate time slots for the day (9 AM to 6 PM, 30-minute intervals)
-    const timeSlots = this.generateTimeSlots();
-
-    // Get existing bookings for the day
-    const existingBookings = await this.bookingRepository.find({
-      where: {
-        providerId,
-        scheduledDate: new Date(date),
-        status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS]),
-      },
-    });
-
-    // Mark unavailable slots
-    const availability = timeSlots.map((slot) => {
-      const slotStart = this.timeToMinutes(slot.startTime);
-      const slotEnd = this.timeToMinutes(slot.endTime);
-
-      const isOccupied = existingBookings.some((booking) => {
-        const bookingStart = this.timeToMinutes(booking.startTime);
-        const bookingEnd = this.timeToMinutes(booking.endTime);
-
-        // Check for overlap
-        return slotStart < bookingEnd && slotEnd > bookingStart;
+      // Validate service
+      const service = await this.serviceRepository.findOne({
+        where: { id: serviceId, isActive: true },
       });
 
-      return {
-        ...slot,
-        available: !isOccupied,
-      };
-    });
+      if (!service || service.providerId !== providerId) {
+        throw new NotFoundException('Service not found');
+      }
 
-    // Cache availability for 1 minute (short TTL since it changes frequently)
-    await this.cacheService.setAvailability(providerId, serviceId, date, availability, 60);
+      // Generate time slots for the day (9 AM to 6 PM, 30-minute intervals)
+      const timeSlots = this.generateTimeSlots();
 
-    return availability;
+      // Get existing bookings for the day
+      const existingBookings = await this.bookingRepository.find({
+        where: {
+          providerId,
+          scheduledDate: new Date(date),
+          status: In([BookingStatus.PENDING, BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS]),
+        },
+      });
+
+      // Mark unavailable slots
+      const availability = timeSlots.map((slot) => {
+        const slotStart = this.timeToMinutes(slot.startTime);
+        const slotEnd = this.timeToMinutes(slot.endTime);
+
+        const isOccupied = existingBookings.some((booking) => {
+          const bookingStart = this.timeToMinutes(booking.startTime);
+          const bookingEnd = this.timeToMinutes(booking.endTime);
+
+          // Check for overlap
+          return slotStart < bookingEnd && slotEnd > bookingStart;
+        });
+
+        return {
+          ...slot,
+          available: !isOccupied,
+        };
+      });
+
+      // Cache availability for 1 minute (short TTL since it changes frequently)
+      await this.cacheService.setAvailability(providerId, serviceId, date, availability, 60);
+
+      return availability;
     } catch (error) {
       this.logger.error(`Error getting availability: ${error.message}`, error.stack);
       throw error;
@@ -283,7 +295,7 @@ export class BookingService {
   async getUserBookings(customerId: string): Promise<BookingResult[]> {
     try {
       this.logger.debug(`Getting bookings for customer ${customerId}`);
-      
+
       const bookings = await this.bookingRepository.find({
         where: { customerId },
         relations: ['service', 'provider', 'customer', 'customer.profile'],
@@ -291,12 +303,15 @@ export class BookingService {
       });
 
       this.logger.debug(`Found ${bookings.length} bookings for customer ${customerId}`);
-      
+
       return bookings.map((booking) => {
         try {
           return this.transformBookingResult(booking);
         } catch (error) {
-          this.logger.error(`Error transforming booking ${booking.id}: ${error.message}`, error.stack);
+          this.logger.error(
+            `Error transforming booking ${booking.id}: ${error.message}`,
+            error.stack,
+          );
           throw error;
         }
       });
@@ -535,8 +550,8 @@ export class BookingService {
     });
 
     // Filter out excluded booking if provided
-    const relevantBookings = excludeBookingId 
-      ? bookings.filter(b => b.id !== excludeBookingId)
+    const relevantBookings = excludeBookingId
+      ? bookings.filter((b) => b.id !== excludeBookingId)
       : bookings;
 
     // Check for time conflicts
@@ -581,7 +596,8 @@ export class BookingService {
         const endMin = endMinutes >= 60 ? endMinutes - 60 : endMinutes;
         const endTime = `${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}`;
 
-        if (endHour <= 18) { // Don't exceed 6 PM
+        if (endHour <= 18) {
+          // Don't exceed 6 PM
           slots.push({
             startTime,
             endTime,
@@ -602,14 +618,15 @@ export class BookingService {
   private transformBookingResult(booking: Booking, service?: Service): BookingResult {
     try {
       // Handle scheduledDate whether it's a Date object or string
-      const scheduledDate = booking.scheduledDate instanceof Date 
-        ? booking.scheduledDate 
-        : new Date(booking.scheduledDate);
-      
+      const scheduledDate =
+        booking.scheduledDate instanceof Date
+          ? booking.scheduledDate
+          : new Date(booking.scheduledDate);
+
       // Ensure scheduledTime is a string
       const scheduledTime = booking.scheduledTime || '00:00:00';
       const duration = booking.duration || service?.durationMinutes || 60;
-      
+
       return {
         id: booking.id,
         providerId: booking.providerId,
@@ -635,7 +652,10 @@ export class BookingService {
         createdAt: booking.createdAt || new Date(),
       };
     } catch (error) {
-      this.logger.error(`Error in transformBookingResult for booking ${booking?.id}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error in transformBookingResult for booking ${booking?.id}: ${error.message}`,
+        error.stack,
+      );
       throw new Error(`Failed to transform booking result: ${error.message}`);
     }
   }
